@@ -15,6 +15,6 @@ public interface AccountDao extends CrudRepository<Account, Long> {
      */
     public Account findBy_id(String _id);
 
-    public Account findByusername(String username);
+
 
 }

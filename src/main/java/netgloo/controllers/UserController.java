@@ -4,10 +4,13 @@ import netgloo.models.User;
 import netgloo.models.UserDao;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 @Controller
 public class UserController {
@@ -31,6 +34,19 @@ public class UserController {
         return "User succesfully created with id = " + userId;
     }
 
+    /**
+     * dummy login with encryption test
+     */
+    @RequestMapping(value="/userLogin", method = RequestMethod.GET)
+    public ResponseEntity<?> userlogin(@PathVariable User user){
+//waiting for conner's crap for now for encryption
+       /* if() {
+            return new ResponseEntity<String>("login accepted", null, HttpStatus.OK);
+        }else {
+*/
+            return new ResponseEntity<String>("login failed", null, HttpStatus.BAD_REQUEST);
+  //      }
+    }
     /**
      * GET /delete  --> Delete the user having the passed id.
      */
@@ -66,6 +82,18 @@ public class UserController {
         }
     }
 
+    /**
+     * creates user if username does not already exist in the database
+     */
+    @RequestMapping(value="/create-user-json", method = RequestMethod.POST)
+    public ResponseEntity<?> createUser(@RequestBody User user){
+        if(!checkUsernameAvailable(user.getUsername())){
+            return new ResponseEntity<Object>("user already exists", null, HttpStatus.CONFLICT);
+        }else {
+            userDao.save(user);
+            return new ResponseEntity<Object>("object created", null, HttpStatus.CREATED);
+        }
+    }
         /**
          * GET /get-by-username  --> Return the id for the user having the passed
          * username.
