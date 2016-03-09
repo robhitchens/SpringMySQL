@@ -1,12 +1,11 @@
 package netgloo.controllers;
 
+import netgloo.models.AccountResponse;
 import netgloo.models.User;
 import netgloo.models.UserDao;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -81,17 +80,31 @@ public class UserController {
             return false;
         }
     }
+    /*
+    @RequestMapping(value = "/verifycustomer", method = RequestMethod.GET)
+    @ResponseBody
+    public String verifyCustomerId(@RequestBody String id){
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> entity = new HttpEntity<>("parametes", headers);
+        String responseCode = restTemplate.exchange("http://api.reimaginebanking.com/customers/"+id+"?key=4ccc60cc8e267df78ac28a88b00abe0d", HttpMethod.GET, entity,);
+    }*/
 
     /**
-     * creates user if username does not already exist in the database
+     * creates user if username does not already exist in the database and //verify that customer id provided exists within cap one api
      */
     @RequestMapping(value="/create-user-json", method = RequestMethod.POST)
     public ResponseEntity<?> createUser(@RequestBody User user){
-        if(!checkUsernameAvailable(user.getUsername())){
-            return new ResponseEntity<Object>("user already exists", null, HttpStatus.CONFLICT);
-        }else {
-            userDao.save(user);
-            return new ResponseEntity<Object>("object created", null, HttpStatus.CREATED);
+        try {
+            if (!checkUsernameAvailable(user.getUsername())) {
+                return new ResponseEntity<Object>("user already exists", null, HttpStatus.CONFLICT);
+            } else {
+                userDao.save(user);
+                return new ResponseEntity<Object>("object created", null, HttpStatus.CREATED);
+            }
+        }catch(Exception e){
+            return new ResponseEntity<Object>("error. failed to create user", null, HttpStatus.I_AM_A_TEAPOT);
         }
     }
         /**

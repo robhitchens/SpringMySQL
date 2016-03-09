@@ -46,4 +46,7 @@ public class AccountJson {
     public void setBalance(int balance) {
         this.balance = balance;
     }
+    public String toString(){
+        return "{\"type\":"+type+",\"nickname\":"+nickname+",\"rewards\":"+rewards+",\"balance\":"+balance+"}";
+    }
 }
