@@ -35,6 +35,7 @@ public class AccountController {
         }
         return "Account succesfully created with id = " + accountId;
     }
+
     @RequestMapping(value="/createAccount", method=RequestMethod.POST)
     public ResponseEntity<?> createAccount(/*@RequestBody AccountJson acct*/){
 
@@ -66,6 +67,31 @@ public class AccountController {
         return "Account succesfully deleted!";
     }
 
+    /**
+     *
+     * @param id
+     * @return response Entity.
+     * responseEntity: successful, unsuccessful, and error I AM A TEAPOT.
+     *
+     * deletes account by id provided from database and capital one api.
+     */
+    @RequestMapping(value="/deleteanaccount", method=RequestMethod.DELETE)
+    public ResponseEntity<?> deleteAccount(@RequestBody String id){
+        try{
+            Account accountToDelete = accountDao.findBy_id(id);
+            if(accountToDelete!=null){
+                RestTemplate restTemplate = new RestTemplate();
+                restTemplate.delete("http://api.reimaginebanking.com/accounts?key=4ccc60cc8e267df78ac28a88b00abe0d", id);
+                accountDao.delete(accountToDelete);
+                return new ResponseEntity<Object>("account deleted", null, HttpStatus.OK);
+            }else{
+                return new ResponseEntity<Object>("account provided does not exist", null, HttpStatus.NOT_ACCEPTABLE);
+            }
+        }catch(Exception ex){
+            return new ResponseEntity<Object>("an error has occurred while deleting account", null, HttpStatus.I_AM_A_TEAPOT);
+        }
+    }
+
 
     /**
      * GET /get-account-by-CapOneid  --> Return the account having the passed
@@ -91,7 +117,7 @@ public class AccountController {
      */
     @RequestMapping(value = "/pull-account-from-CapOne-by-ID", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ResponseBody
-    public Account getAccountFromCapOne_id(String _id, boolean savetodatabase) {
+    public Account getAccountFromCapOne_id(@RequestBody String _id, boolean savetodatabase) {
         RestTemplate restTemplate = new RestTemplate();
         Account account = restTemplate.getForObject("http://api.reimaginebanking.com/enterprise/accounts/" + _id + "?key=bb1a1852a7e6b8c788147bf3d172726e", Account.class);
 
@@ -104,7 +130,7 @@ public class AccountController {
 
     @RequestMapping(value = "/get-account-by-customer_id", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ResponseBody
-    public Account getBycustomer_id(String customer_id) {
+    public Account getBycustomer_id(@RequestBody String customer_id) {
         Account account;
         try {
             account = accountDao.findBy_id(customer_id);
@@ -117,21 +143,24 @@ public class AccountController {
 
     /**
      * GET /updateaccount  --> Update the details for the account in the
-     * database having the passed id.
+     * database having the passed account id.
+     * will update nickname of account.
+     * encryption of account id should be required.
      */
-    @RequestMapping("/updateaccount")
-    @ResponseBody
-    public String updateAccount(long id, String _id, String nickname) {
+    @RequestMapping(value="/updateaccount/{_id}/", method = RequestMethod.PUT)
+    public ResponseEntity<?> updateAccount(@PathVariable String _id, @RequestBody String nickname) {
         try {
-            Account account = accountDao.findOne(id);
-            account.set_id(_id);
+            Account account = accountDao.findBy_id(_id);
+            RestTemplate restTemplate = new RestTemplate();
+            //need to map nickname to object//
+            restTemplate.put("http://api.reimaginebanking.com/accounts/"+_id+"?key=4ccc60cc8e267df78ac28a88b00abe0d", nickname);
             account.setNickname(nickname);
             accountDao.save(account);
         }
         catch (Exception ex) {
-            return "Error updating the account: " + ex.toString();
+            return new ResponseEntity<Object>("error occured: update failed.", null, HttpStatus.I_AM_A_TEAPOT);
         }
-        return "User succesfully updated!";
+        return new ResponseEntity<Object>("User succesfully updated!", null, HttpStatus.OK);
     }
 
     // Private fields
