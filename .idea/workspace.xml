@@ -2,13 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="eff758ad-b9fb-47d9-b7dd-721e4304dff4" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/netgloo/controllers/AccountController.class" afterPath="$PROJECT_DIR$/target/classes/netgloo/controllers/AccountController.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/netgloo/controllers/UserController.class" afterPath="$PROJECT_DIR$/target/classes/netgloo/controllers/UserController.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/netgloo/models/AccountJson.class" afterPath="$PROJECT_DIR$/target/classes/netgloo/models/AccountJson.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/netgloo/controllers/AccountController.java" afterPath="$PROJECT_DIR$/src/main/java/netgloo/controllers/AccountController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/netgloo/controllers/UserController.java" afterPath="$PROJECT_DIR$/src/main/java/netgloo/controllers/UserController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/netgloo/models/AccountJson.java" afterPath="$PROJECT_DIR$/src/main/java/netgloo/models/AccountJson.java" />
     </list>
     <ignored path="mySQL.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -31,20 +25,20 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="AccountController.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="AccountController.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/netgloo/controllers/AccountController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="33" column="30" selection-start-line="33" selection-start-column="30" selection-end-line="33" selection-end-column="30" />
+            <state vertical-scroll-proportion="0.6405694">
+              <caret line="53" column="171" selection-start-line="53" selection-start-column="171" selection-end-line="53" selection-end-column="171" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name=".gitignore" pinned="false" current-in-tab="true">
+      <file leaf-file-name=".gitignore" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/.gitignore">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.053380784">
+            <state vertical-scroll-proportion="0.0">
               <caret line="2" column="7" selection-start-line="2" selection-start-column="7" selection-end-line="2" selection-end-column="7" />
               <folding />
             </state>
@@ -208,8 +202,8 @@
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/src/main/java/netgloo/controllers/UserController.java" />
         <option value="$PROJECT_DIR$/src/main/java/netgloo/models/AccountJson.java" />
-        <option value="$PROJECT_DIR$/src/main/java/netgloo/controllers/AccountController.java" />
         <option value="$PROJECT_DIR$/.gitignore" />
+        <option value="$PROJECT_DIR$/src/main/java/netgloo/controllers/AccountController.java" />
       </list>
     </option>
   </component>
@@ -848,12 +842,12 @@
       <created>1457378363027</created>
       <option name="number" value="Default" />
       <updated>1457378363027</updated>
-      <workItem from="1457378366150" duration="35934000" />
+      <workItem from="1457378366150" duration="36067000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="35934000" />
+    <option name="totallyTimeSpent" value="36067000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1271" y="43" width="1811" height="896" extended-state="0" />
@@ -1090,18 +1084,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/netgloo/controllers/AccountController.java">
+    <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="33" column="30" selection-start-line="33" selection-start-column="30" selection-end-line="33" selection-end-column="30" />
+          <caret line="2" column="7" selection-start-line="2" selection-start-column="7" selection-end-line="2" selection-end-column="7" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.gitignore">
+    <entry file="file://$PROJECT_DIR$/src/main/java/netgloo/controllers/AccountController.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.053380784">
-          <caret line="2" column="7" selection-start-line="2" selection-start-column="7" selection-end-line="2" selection-end-column="7" />
+        <state vertical-scroll-proportion="0.6405694">
+          <caret line="53" column="171" selection-start-line="53" selection-start-column="171" selection-end-line="53" selection-end-column="171" />
           <folding />
         </state>
       </provider>
