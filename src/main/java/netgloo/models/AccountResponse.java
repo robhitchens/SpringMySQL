@@ -12,6 +12,7 @@ public class AccountResponse {
         this.code = code;
         this.message = message;
         this.objectCreated = objectCreated;
+        objectCreated.setGoal(0.0);
     }
 
     public AccountResponse() {

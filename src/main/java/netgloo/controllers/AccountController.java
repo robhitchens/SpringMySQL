@@ -1,5 +1,8 @@
 package netgloo.controllers;
 
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiResponse;
+import com.wordnik.swagger.annotations.ApiResponses;
 import netgloo.models.Account;
 import netgloo.models.AccountDao;
 
@@ -9,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestClientException;
@@ -38,6 +42,7 @@ public class AccountController {
     }
 
     @RequestMapping(value="/createAccount", method=RequestMethod.POST)
+
     public ResponseEntity<?> createAccount(/*@RequestBody AccountJson acct*/){
         RestTemplate restTemplater = new RestTemplate();
         /*HttpHeaders headers = new HttpHeaders();
@@ -59,11 +64,29 @@ public class AccountController {
         return new ResponseEntity<Object>(returned.getObjectCreated(), HttpStatus.valueOf(returned.getCode()));
     }
 
+    @RequestMapping(value="/createAccountFix", method = RequestMethod.POST)
+    @ApiOperation(value = "Creates a new Account", notes="Creates a new account using capital one api and put the returned account in to database", response = Void.class)
+    @ApiResponses(value = {@ApiResponse(code=201, message="Account Created Successfully", response=ResponseEntity.class),
+            @ApiResponse(code=500, message="Error creating Account") } )
+    public ResponseEntity<?> createAccount(@RequestBody AccountJson acct){
+        RestTemplate restTemplater = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType( MediaType.APPLICATION_JSON );
+
+        HttpEntity request = new HttpEntity(acct.toString(), headers);
+        restTemplater.getMessageConverters().add(new StringHttpMessageConverter());
+
+        AccountResponse returned = restTemplater.postForObject("http://api.reimaginebanking.com/customers/56c66be5a73e49274150743b/accounts?key=4ccc60cc8e267df78ac28a88b00abe0d", request, AccountResponse.class);
+        accountDao.save(returned.getObjectCreated());
+        return new ResponseEntity<Object>(returned.getObjectCreated(), HttpStatus.valueOf(returned.getCode()));
+    }
+
     /**
      * GET /deleteaccount  --> Delete the account having the passed id.
      */
     @RequestMapping("/deleteaccount")
-    @ResponseBody//fix this somehow
+    @ResponseBody//fix this somehow. do we even need this.
     public String delete(long id) {
         try {
             Account account = new Account();
@@ -84,6 +107,10 @@ public class AccountController {
      * deletes account by id provided from database and capital one api.
      */
     @RequestMapping(value="/deleteanaccount", method=RequestMethod.DELETE)
+    @ApiOperation(value = "Deletes an Account", notes="Deletes an account from capital one api and app database", response = Void.class)
+    @ApiResponses(value = {@ApiResponse(code=201, message="Account Deleted Successfully", response=ResponseEntity.class),
+            @ApiResponse(code=418, message="Error deleting account"),
+            @ApiResponse(code=406, message="account provided does not exist")} )
     public ResponseEntity<?> deleteAccount(@RequestBody String id){
         try{
             Account accountToDelete = accountDao.findBy_id(id);

@@ -1,9 +1,16 @@
 package netgloo.controllers;
 
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiResponse;
+import com.wordnik.swagger.annotations.ApiResponses;
 import netgloo.models.AccountResponse;
 import netgloo.models.User;
 import netgloo.models.UserDao;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -67,6 +74,9 @@ public class UserController {
      */
     @RequestMapping(value = "/checkusernameavailable", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ResponseBody
+    @ApiOperation(value = "Checks to see if username is not in database", notes="Checks the given username against usernames in teh application database.", response = Boolean.class)
+    @ApiResponses(value = {@ApiResponse(code=201, message="User does not exist in the database", response=Boolean.class),
+            @ApiResponse(code=500, message="user already exists int the database", response=Boolean.class) } )
     public boolean checkUsernameAvailable(String username) {
         User user;
         try {
@@ -80,28 +90,53 @@ public class UserController {
             return false;
         }
     }
-    /*
+
     @RequestMapping(value = "/verifycustomer", method = RequestMethod.GET)
     @ResponseBody
-    public String verifyCustomerId(@RequestBody String id){
-        RestTemplate restTemplate = new RestTemplate();
+    @ApiOperation(value = "Verifies teh customer_id with the capital one api", notes="returns a response code", response = Integer.class)
+    @ApiResponses(value = {@ApiResponse(code=201, message="the customer_id provided is a capital one customer", response=Integer.class),
+            @ApiResponse(code=400, message="MalformedURL exception", response=Integer.class),
+            @ApiResponse(code=418, message="IOexception", response=Integer.class)} )
+    public int verifyCustomerId(@RequestBody String id){
+        /*RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> entity = new HttpEntity<>("parametes", headers);
         String responseCode = restTemplate.exchange("http://api.reimaginebanking.com/customers/"+id+"?key=4ccc60cc8e267df78ac28a88b00abe0d", HttpMethod.GET, entity,);
-    }*/
+        */
+        try {
+            URL url = new URL("http://api.reimaginebanking.com/customers/"+id+"?key=4ccc60cc8e267df78ac28a88b00abe0d");
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            return connection.getResponseCode();
+        }catch(MalformedURLException e) {
+            e.printStackTrace();
+            return 400;
+        }catch(IOException ioe){
+            ioe.printStackTrace();
+            return 418;
+        }
+    }
 
     /**
      * creates user if username does not already exist in the database and //verify that customer id provided exists within cap one api
      */
     @RequestMapping(value="/create-user-json", method = RequestMethod.POST)
+    @ApiOperation(value = "Creates a new User", notes="Creates a new user in the app Database.", response = Void.class)
+    @ApiResponses(value = {@ApiResponse(code=201, message="User Created Successfully", response=ResponseEntity.class),
+            @ApiResponse(code=418, message="Error creating User", response=ResponseEntity.class),
+            @ApiResponse(code=406, message="Customer_id does not exist with capital one.", response=ResponseEntity.class),
+            @ApiResponse(code=409, message="Customer_id already exists", response=ResponseEntity.class)} )
     public ResponseEntity<?> createUser(@RequestBody User user){
         try {
             if (!checkUsernameAvailable(user.getUsername())) {
                 return new ResponseEntity<Object>("user already exists", null, HttpStatus.CONFLICT);
             } else {
-                userDao.save(user);
-                return new ResponseEntity<Object>("object created", null, HttpStatus.CREATED);
+                if(verifyCustomerId(user.getCustomerId())==200) {
+                    userDao.save(user);
+                    return new ResponseEntity<Object>("object created", null, HttpStatus.CREATED);
+                }else{
+                    return new ResponseEntity<Object>("Customer_id does not exist with capital one.", null, HttpStatus.NOT_ACCEPTABLE);
+                }
             }
         }catch(Exception e){
             return new ResponseEntity<Object>("error. failed to create user", null, HttpStatus.I_AM_A_TEAPOT);

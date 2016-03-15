@@ -19,12 +19,12 @@ public class Account {
 */
 
 
-    @NotNull
+    //@NotNull
     @Transient
     private String type;
 
 
-    @NotNull
+    //@NotNull
     @Transient
     private String nickname;
 
@@ -56,12 +56,14 @@ public class Account {
         this.id = id;
     }
 */
-    public Account(String type, String nickname, int rewards, double balance){
+    public Account(String _id, String type, String nickname, int rewards, double balance, String customer_id){
+        this._id = _id;
         this.type = type;
         this.nickname = nickname;
         this.rewards = rewards;
         this.balance = balance;
-        //this.customer_id = customer_id;
+        this.customer_id = customer_id;
+        goal = 0;
     }
 
     public Account(String _id,  String nickname) {
@@ -70,6 +72,9 @@ public class Account {
 
     }
 
+    public String toString(){
+        return type+":"+nickname+":"+rewards+":"+balance+":"+customer_id+":"+_id;
+    }
   /*  public long getId() {
         return id;
     }
